@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    # Удаляем command и используем переменную окружения для bind_ip
+    environment:
+      MONGODB_BIND_IP: "0.0.0.0" # Явно указываем MongoDB связываться со всеми интерфейсами
+    command: ["mongod", "--replSet", "rs0"] # Только команда для реплика-сета
+    volumes:
+      - mongo-data:/data/db
+      - ./init-replica.js:/docker-entrypoint-initdb.d/init-replica.js
+    # extra_hosts пока оставим, на случай если он помогает с разрешением имени хоста
+    extra_hosts:
+      - "db:127.0.0.1" 
+
+  express-app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "mongodb://db:27017/mydatabase?replicaSet=rs0&directConnection=true"
+      SECRET_KEY: "123"
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

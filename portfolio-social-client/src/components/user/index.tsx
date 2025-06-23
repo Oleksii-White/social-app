@@ -1,0 +1,29 @@
+import React from 'react'
+import { User as HeroUiUser} from '@heroui/user'
+import { BASE_URL } from '@/constans';
+
+type Props = {
+    name: string;
+    avatarUrl: string;
+    description?: string;
+    className?: string;
+}
+
+export const User: React.FC<Props> = ({
+    name = '',
+    avatarUrl = '',
+    description = '',
+    className = '',
+}) => {
+  return (
+    
+    <HeroUiUser
+        name={name}
+        description={description}
+        className={className}
+        avatarProps={{
+            src: `${BASE_URL}${avatarUrl}`,
+        }}
+    />
+  )
+}
