@@ -10,6 +10,7 @@ type Props = {
     control: Control<any>;
     required?: string;
     endContent?: JSX.Element;
+    error?: string;
 };
 
 export const Input: React.FC<Props> = ({
@@ -43,7 +44,7 @@ export const Input: React.FC<Props> = ({
             name={field.name}
             isInvalid={invalid}
             onChange={field.onChange}
-            onBlur={(e) => {
+            onBlur={() => {
                 field.onBlur();
                 setShowPlaceholder(false);
             }}

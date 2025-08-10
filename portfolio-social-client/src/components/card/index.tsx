@@ -30,6 +30,7 @@ import { useState } from 'react';
 import { hasErrorField } from '@/utils/has-error-field';
 import { Link, useNavigate } from 'react-router-dom';
 
+
 type Props = {
   avatarUrl: string
   name: string
@@ -42,7 +43,6 @@ type Props = {
   id?: string
   cardFor: "comment" | "post" | "current-post"
   likedByUser?: boolean
-  refetchPosts: () => void
 }
 
 export const Card = ({
@@ -57,7 +57,6 @@ export const Card = ({
   likedByUser = false,
   createdAt,
   commentId = "",
-  refetchPosts
 }: Props) => {
   const [likePost] = useLikePostMutation()
   const [unlikePost] = useUnlikePostMutation()
@@ -69,34 +68,34 @@ export const Card = ({
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrent)
 
-//   const refetchPosts = async () => {
-//     switch (cardFor) {
-//       case "post":
-//         await triggerGetAllPosts().unwrap()
-//         break
-//       case "current-post":
-//         await triggerGetAllPosts().unwrap()
-//         break
-//       case "comment":
-//         await triggerGetPostById(id).unwrap()
-//         break
-//       default:
-//         throw new Error("Неверный аргумент cardFor")
-//     }
-//   }
+  const refetchPosts = async () => {
+    switch (cardFor) {
+      case "post":
+        await triggerGetAllPosts().unwrap()
+        break
+      case "current-post":
+        await triggerGetAllPosts().unwrap()
+        break
+      case "comment":
+        await triggerGetPostById(id).unwrap()
+        break
+      default:
+        throw new Error("Неверный аргумент cardFor")
+    }
+  }
 
   const handleClick = async () => {
     try {
       likedByUser
         ? await unlikePost(id).unwrap()
         : await likePost({ postId: id }).unwrap()
-
+      await triggerGetPostById(id).unwrap()
       await refetchPosts()
     } catch (err) {
       if (hasErrorField(err)) {
         setError(err.data.error)
       } else {
-        setError(String(err))
+        setError(err as string)
       }
     }
   }
@@ -121,11 +120,11 @@ export const Card = ({
       }
 
     } catch (err) {
-      console.error(err)
+      console.log(err)
       if (hasErrorField(err)) {
         setError(err.data.error)
       } else {
-        setError(String(err))
+        setError(err as string)
       }
     }
   }
@@ -139,7 +138,7 @@ export const Card = ({
                         name={name}
                         className='text-small font-semibold leading-none text-default-600'
                         avatarUrl={avatarUrl}
-                        description={createdAt && formatToClientDate(createdAt)}
+                        description={createdAt && formatToClientDate()}
                     />
                 </Link>
                 {
@@ -147,7 +146,7 @@ export const Card = ({
                         <div className='cursor-pointer' onClick={handleDelete}>
                             {
                                 deletePostStatus.isLoading || deleteCommentStatus.isLoading ? (
-                                    <Spinner />
+                                    <Spinner/>
                                 ) : (
                                     <RiDeleteBinLine />
                                 )
@@ -158,16 +157,18 @@ export const Card = ({
             </CardHeader>
             <CardBody className='px-3 py-2 mb-5'>
                 <Typography>{content}</Typography>
+                
             </CardBody>
             {
                 cardFor !== 'comment' && (
-                    <CardFooter className='gap-3'>
+                    <CardFooter className='gap-3 flex justify-between'>
                         <div className="flex gap-5 items-center">
-                            <div onClick={handleClick}>
+                            <div onClick={handleClick} className='cursor-pointer'>
                                 <MetaInfo
                                     count={likesCount}
-                                    Icon={likedByUser ? FcDislike : MdOutlineFavoriteBorder} 
+                                    Icon={likedByUser  ? FcDislike : MdOutlineFavoriteBorder} 
                                 />
+                                
                             </div>
                             <Link to={`/posts/${id}`}>
                                 <MetaInfo
@@ -176,10 +177,15 @@ export const Card = ({
                                 />
                             </Link>
                         </div>
+                        <div>
+                          <p className='font-semibold text-default-400 text-m'>{createdAt && formatToClientDate(createdAt)}</p>
+                        </div>
                         <ErrorMessage error={error} />
                     </CardFooter>
                 )
             }
+            
         </HeroUiCard>
+        
     );
 };

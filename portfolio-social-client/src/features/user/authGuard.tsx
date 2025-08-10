@@ -7,7 +7,7 @@ export const AuthGuard = ({
     const { isLoading } = useCurrentQuery();
 
     if (isLoading) {
-        return <Spinner />
+        return <Spinner className='flex items-center justify-center'/>
     }
   return children
 }

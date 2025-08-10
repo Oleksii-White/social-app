@@ -63,6 +63,7 @@ export const Register: React.FC<Props> = ({
                 type='email'
                 placeholder='Required field'
                 required={'Email is required'}
+                error={errors.email?.message}
             />
             <Input
                 control={control}
@@ -71,6 +72,8 @@ export const Register: React.FC<Props> = ({
                 type='password'
                 placeholder='Required field'
                 required={'Password is required'}
+                error={errors.password?.message}
+
             />
 
             <ErrorMessage error={error} />

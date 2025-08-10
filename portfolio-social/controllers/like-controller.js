@@ -1,63 +1,61 @@
-const { prisma } = require("../prisma/prisma-client");
-
+const { prisma } = require('../prisma/prisma-client');
 
 const LikeController = {
-    likePost: async (req, res) => {
-        const { postId } = req.body;
-        const userId = req.user.userId;
+  likePost: async (req, res) => {
+    const { postId } = req.body;
 
-        if (!postId) {
-            return res.status(400).json({ message: 'Post ID is required' });
-        }
+    const userId = req.user.userId;
 
-        try {
-            const existingLike = await prisma.like.findFirst({
-                where: {
-                    postId,
-                    userId
-                }
-            });
-            if (existingLike) {
-                return res.status(400).json({ message: 'You have already liked this post' });
-            }
-            const like = await prisma.like.create({
-                data: { postId, userId }
-            });
-            res.json(like);
-        } catch (error) {
-            console.error('Error liking post:', error);
-            return res.status(500).json({ message: 'Error with liking post' });
-        }
-    },
-    unlikePost: async (req, res) => {
-        const { id } = req.params;
-        const userId = req.user.userId;
-
-        if (!id) {
-            return res.status(400).json({ message: 'Post ID is required for unliking' });
-        }
-
-        try {
-            const existingLike = await prisma.like.findFirst({
-                where: { postId: id, userId }
-            });
-
-            if (!existingLike) {
-                return res.status(400).json({ message: 'You have not liked this post yet' });
-            }
-
-            await prisma.like.deleteMany({
-                where: { postId: id, userId }
-            });
-            return res.status(200).json({ message: 'Like removed successfully' });
-
-        } catch (error) {
-            console.error('Error unliking post:', error);
-            res.status(500).json({ error: "Something wrong with unliking post" });
-        }
+    if (!postId) {
+      return res.status(400).json({ error: 'Все поля обязательны' });
     }
 
+    try {
+      const existingLike = await prisma.like.findFirst({
+        where: { postId, userId },
+      });
 
-}
+      if(existingLike) {
+        return res.status(400).json({ error: '123Вы уже поставили лайк этому посту' });
+      }
 
-module.exports = LikeController;
+      const like = await prisma.like.create({ 
+        data: { postId, userId },
+      });
+
+      res.json(like);
+    } catch (error) {
+      res.status(500).json({ error: 'Что-то пошло не так' });
+    }
+  },
+
+  unlikePost: async (req, res) => {
+    const { id } = req.params;
+
+    const userId = req.user.userId;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Вы уже поставили дизлайк этому посту' });
+    }
+
+    try {
+      const existingLike = await prisma.like.findFirst({
+        where: { postId: id, userId },
+      });
+
+      if(!existingLike) {
+        return res.status(400).json({ error: 'Лайк уже существует' });
+      }
+
+      const like = await prisma.like.deleteMany({
+        where: { postId: id, userId },
+      });
+
+      res.json(like);
+    } catch (error) {
+      res.status(500).json({ error: 'Что-то пошло не так' });
+    }
+  }
+};
+
+module.exports = LikeController

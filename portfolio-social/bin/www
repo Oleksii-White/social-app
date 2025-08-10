@@ -4,8 +4,8 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('portfolio-social:server');
+var app = require('../app'); // Твое приложение Express
+var debug = require('debug')('portfolio-social:server'); // Модуль отладки
 var http = require('http');
 
 /**
@@ -25,9 +25,12 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+// Добавляем логи, чтобы отслеживать запуск сервера
+console.log(`Server will attempt to listen on port ${port}`);
+
+server.listen(port); // Сервер начинает слушать порт
+server.on('error', onError); // Обработчик ошибок сервера
+server.on('listening', onListening); // Обработчик события успешного прослушивания
 
 /**
  * Normalize a port into a number, string, or false.
@@ -62,17 +65,18 @@ function onError(error) {
     ? 'Pipe ' + port
     : 'Port ' + port;
 
-  // handle specific listen errors with friendly messages
+  // Обработка специфических ошибок listen с дружественными сообщениями
   switch (error.code) {
     case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+      console.error(`${bind} requires elevated privileges`);
       process.exit(1);
       break;
     case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+      console.error(`${bind} is already in use`);
       process.exit(1);
       break;
     default:
+      console.error(`Unhandled server error: ${error.message}`); // Добавлен более подробный лог ошибки
       throw error;
   }
 }
@@ -86,5 +90,6 @@ function onListening() {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  console.log(`Server successfully listening on ${bind}`); // Добавлен console.log для успешного запуска
+  debug('Listening on ' + bind); // Это сообщение отладчика, которое увидим только при DEBUG=portfolio-social:server
 }

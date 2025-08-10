@@ -2,7 +2,6 @@ import { useLazyGetPostByIdQuery } from '@/app/services/postsApi'
 import { useCreateCommentMutation } from '@/app/services/commentsApi';
 import { Textarea } from '@heroui/input';
 import { Controller, useForm } from 'react-hook-form';
-import { ErrorMessage } from '../error-message';
 import { Button } from '@heroui/button';
 import { IoMdCreate } from 'react-icons/io';
 import { useParams } from 'react-router-dom';
@@ -23,7 +22,6 @@ export const CreateComment = () => {
     setValue
   } = useForm<FormValues>();
 
-  const error = errors?.comment?.message;
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -55,7 +53,6 @@ export const CreateComment = () => {
           />
         )}
       />
-      {error && <ErrorMessage error={error} />}
       <Button
         color='primary'
         className='flex-end'

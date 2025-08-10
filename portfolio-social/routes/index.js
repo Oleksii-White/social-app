@@ -1,44 +1,51 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const UserController = require("../controllers/user-controller");
+const PostController = require("../controllers/post-controller");
+const FollowController = require("../controllers/follow-controller");
+const LikeController = require("../controllers/like-controller");
+const CommentController = require("../controllers/comment-controller");
+const { authenticateToken } = require("../middleware/auth");
 const multer = require('multer');
-const { UserController, PostController, CommentController, LikeController, FollowController } = require('../controllers');
-const authenticateToken = require('../middleware/auth');
 
-const uploadDestination = 'uploads/'; 
+const uploadDestination = 'uploads';
 
-//storage for multer
+// Показываем, где хранить загружаемые файлы
 const storage = multer.diskStorage({
-    destination: uploadDestination,
-    filename: function(req, file, cb) {
-        cb(null, file.originalname); // сохраняем файл с оригинальным именем
-    }
+  destination: uploadDestination,
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  }
 });
 
-const uploads = multer({ storage: storage});
-// user routes
-router.post('/register', UserController.register);
-router.post('/login', UserController.login);
-router.get('/current', authenticateToken, UserController.current);
-router.get('/users/:id', authenticateToken, UserController.getUserById);
-router.put('/users/:id', authenticateToken, UserController.updateUser);
+const upload = multer({ storage: storage });
+// Роуты User
+router.post("/register", UserController.register);
+router.post("/login", UserController.login);
+router.get("/current", authenticateToken, UserController.current);
+router.get("/users/:id", authenticateToken, UserController.getUserById);
+router.put("/users/:id", authenticateToken, upload.single('avatar'), UserController.updateUser);
 
-//post routes
-router.post('/posts', authenticateToken, PostController.createPost);
-router.get('/posts', authenticateToken, PostController.getAllPosts);
-router.get('/posts/:id', authenticateToken, PostController.getPostById);
-router.delete('/posts/:id', authenticateToken, PostController.deletePost);
+// Роуты Post
+router.post("/posts", authenticateToken, PostController.createPost);
+router.get("/posts", authenticateToken, PostController.getAllPosts);
+router.get("/posts/:id", authenticateToken, PostController.getPostById);
+router.delete("/posts/:id", authenticateToken, PostController.deletePost);
 
-// comment routes
-router.post('/comment/', authenticateToken, CommentController.createComment);
-router.delete('/comment/:id', authenticateToken, CommentController.deleteComment);
+// Роуты подписки
+router.post("/follow", authenticateToken, FollowController.followUser);
+router.delete("/unfollow/:id",authenticateToken, FollowController.unfollowUser);
 
+// Роуты лайков
+router.post("/likes", authenticateToken, LikeController.likePost);
+router.delete("/likes/:id", authenticateToken, LikeController.unlikePost);
 
-//like routes
-router.post('/likes', authenticateToken, LikeController.likePost);
-router.delete('/likes/:id', authenticateToken, LikeController.unlikePost);
-
-//follow routes
-router.post('/follow', authenticateToken, FollowController.followUser);
-router.delete('/unfollow/:id', authenticateToken, FollowController.unFollowUser);
+// Роуты комментариев
+router.post("/comments", authenticateToken, CommentController.createComment);
+router.delete(
+  "/comments/:id",
+  authenticateToken,
+  CommentController.deleteComment
+);
 
 module.exports = router;
