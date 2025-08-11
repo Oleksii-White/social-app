@@ -1,6 +1,7 @@
 FROM node:22 as build 
 
 ARG VITE_BASE_URL
+ARG NODE_OPTIONS
 
 WORKDIR /usr/src/app
 
@@ -9,10 +10,9 @@ COPY package*.json ./
 RUN npm install
 
 ENV VITE_BASE_URL=$VITE_BASE_URL
+ENV NODE_OPTIONS=$NODE_OPTIONS
 
 COPY . .
-
-# ENV NODE_OPTIONS=--max-old-space-size=4096
 
 RUN npm run build
 
