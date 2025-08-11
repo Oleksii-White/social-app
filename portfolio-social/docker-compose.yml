@@ -34,10 +34,9 @@ services:
       - "80:80"
     environment:
       - NODE_OPTIONS=--max-old-space-size=4096
-      - VITE_BASE_URL=http://16.16.25.78:3000
     restart: unless-stopped
     depends_on:
       - express-app
 
 volumes:
-  mongo-data: 
+  mongo-data:
