@@ -30,6 +30,8 @@ services:
     build: ../portfolio-social-client
     ports:
       - "80:80"
+    environment:
+      - VITE_BASE_URL=http://16.16.25.78:3000
     # volumes:
     #   - ../portfolio-social-client:/app
     #   - /app/node_modules
