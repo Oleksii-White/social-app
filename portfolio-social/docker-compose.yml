@@ -5,10 +5,9 @@ services:
       - "27017:27017"
     environment:
       MONGODB_BIND_IP: "0.0.0.0" 
-      
     command: ["mongod", "--replSet", "rs0"] 
     volumes:
-      - mongo-data:/data/db #
+      - mongo-data:/data/db
       - ./init-replica.js:/docker-entrypoint-initdb.d/init-replica.js:ro
     restart: unless-stopped 
   express-app: 
@@ -27,17 +26,15 @@ services:
     restart: unless-stopped 
 
   react-app: 
-    build: ../portfolio-social-client
-    args:
-      - VITE_BASE_URL=http://16.16.25.78:3000
+    build: 
+      context: ../portfolio-social-client
+      args:
+        - VITE_BASE_URL=http://16.16.25.78:3000
     ports:
       - "80:80"
     environment:
       - NODE_OPTIONS=--max-old-space-size=4096
       - VITE_BASE_URL=http://16.16.25.78:3000
-    # volumes:
-    #   - ../portfolio-social-client:/app
-    #   - /app/node_modules
     restart: unless-stopped
     depends_on:
       - express-app
