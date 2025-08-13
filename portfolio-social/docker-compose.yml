@@ -16,10 +16,12 @@ services:
       - "3000:3000" 
     depends_on:
       - db 
-    environment:
-      DATABASE_URL: "mongodb://db:27017/mydatabase?replicaSet=rs0&directConnection=true" 
-      SECRET_KEY: "123" 
-      NODE_ENV: development 
+    env_file:
+      - ./.env
+    # environment:
+    #   DATABASE_URL: "mongodb://db:27017/mydatabase?replicaSet=rs0&directConnection=true" 
+    #   SECRET_KEY: "123" 
+    #   NODE_ENV: development 
     volumes:
       - .:/app
       - /app/node_modules
