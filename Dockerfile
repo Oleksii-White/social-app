@@ -18,5 +18,5 @@ FROM node:20
 WORKDIR /app
 COPY --from=server-build /app/server .
 COPY --from=client-build /app/client/build ./public
-ENV PORT=3000
+# ENV PORT=3000
 CMD ["node", "bin/www"]
