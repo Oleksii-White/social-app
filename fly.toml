@@ -3,16 +3,31 @@ primary_region = 'fra'
 
 [build]
   dockerfile = 'Dockerfile'
+  args = {VITE_BASE_URL="https://portfolio-frosty-glade-30.fly.dev/api"}
+
+
+[env]
+  PORT = "8080"
+  DATABASE_URL = "mongodb+srv://App_User:Vi8tE7rUGX13epQJ@app-cluster.hpm6t5x.mongodb.net/social_app?retryWrites=true&w=majority"
+  SECRET_KEY = "123"
 
 [[services]]
-  internal_port = 3000        # порт, на котором слушает Express
-  protocol      = 'tcp'
+  internal_port = 8080
+  protocol = 'tcp'
 
-  [[services.ports]]
-    port     = 80             # внешний порт Fly
-    handlers = ['http']       # указываем, что это HTTP‑трафик
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
+
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
 
 [[vm]]
-  memory   = '1gb'
-  cpu_kind = 'shared'
-  cpus     = 1
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[mounts]
+  source = "data_storage"
+  destination = "/usr/src/app/uploads"
