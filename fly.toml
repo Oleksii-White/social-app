@@ -1,18 +1,18 @@
-app = 'portfolio-app-floral-glitter-7965'
+app = 'portfolio-frosty-glade-30'
 primary_region = 'fra'
 
 [build]
   dockerfile = 'Dockerfile'
 
 [[services]]
-  protocol = 'tcp'
-  internal_port = 3000
+  internal_port = 3000        # порт, на котором слушает Express
+  protocol      = 'tcp'
 
   [[services.ports]]
-    port     = 80         
-    handlers = ['http']  
+    port     = 80             # внешний порт Fly
+    handlers = ['http']       # указываем, что это HTTP‑трафик
 
 [[vm]]
-  memory = '1gb'
+  memory   = '1gb'
   cpu_kind = 'shared'
-  cpus = 1
+  cpus     = 1
