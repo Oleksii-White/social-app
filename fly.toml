@@ -7,7 +7,7 @@ primary_region = 'fra'
 
 [env]
   PORT = "8080"
-  DATABASE_URL = "mongodb+srv://App_User:Vi8tE7rUGX13epQJ@app-cluster.hpm6t5x.mongodb.net/social_app?retryWrites=true&w=majority"
+  DATABASE_URL = "mongodb+srv://App_User:myNewPassword@app-cluster.hpm6t5x.mongodb.net/social_app?retryWrites=true&w=majority"
   SECRET_KEY = "123"
 
 [[services]]
