@@ -5,7 +5,6 @@ primary_region = 'fra'
   dockerfile = 'Dockerfile'
   args = {VITE_BASE_URL="https://portfolio-frosty-glade-30.fly.dev/api"}
 
-
 [env]
   PORT = "8080"
   DATABASE_URL = "mongodb+srv://App_User:Vi8tE7rUGX13epQJ@app-cluster.hpm6t5x.mongodb.net/social_app?retryWrites=true&w=majority"
