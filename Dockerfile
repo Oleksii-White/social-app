@@ -13,6 +13,8 @@ RUN mkdir uploads
 COPY portfolio-social/package*.json ./
 RUN npm install
 COPY portfolio-social .
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
 RUN npx prisma generate
 
 FROM node:20
