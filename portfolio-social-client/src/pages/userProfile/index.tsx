@@ -7,7 +7,6 @@ import { useEffect } from "react";
 import { GoBack } from "@/components/go-back";
 import { Card } from "@heroui/card";
 import { Image } from "@heroui/image";
-import { BASE_URL } from "@/constans";
 import { Button } from "@heroui/button";
 import { MdOutlinePersonAddAlt1, MdOutlinePersonAddDisabled } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
@@ -72,7 +71,7 @@ export const UserProfile = () => {
       <div className="flex items-center gap-4">
         <Card className="flex flex-col items-center text-center space-y-4 p-5 flex-2">
           <Image
-            src={`${BASE_URL}${data.avatarUrl}`}
+            src={data.avatarUrl}
             alt={data.name}
             width={200}
             height={200}
