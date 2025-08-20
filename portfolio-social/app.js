@@ -43,8 +43,6 @@ async function connectToDatabase() {
 
 connectToDatabase();
 
-app.use('/uploads', express.static('uploads'));
-
 app.use('/api', require('./routes'));
 
 if (!fs.existsSync('uploads')) {

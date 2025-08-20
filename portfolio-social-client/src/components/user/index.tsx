@@ -1,6 +1,5 @@
 import React from 'react'
 import { User as HeroUiUser} from '@heroui/user'
-import { BASE_URL } from '@/constans';
 
 type Props = {
     name: string;
@@ -22,7 +21,7 @@ export const User: React.FC<Props> = ({
         description={description}
         className={className}
         avatarProps={{
-            src: `${BASE_URL}${avatarUrl}`,
+            src: avatarUrl,
         }}
     />
   )

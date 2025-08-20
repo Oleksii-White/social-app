@@ -2,7 +2,6 @@ import { selectCurrent } from "@/features/user/userSlice"
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { useSelector } from "react-redux"
 import {Image} from "@heroui/image";
-import { BASE_URL } from "@/constans";
 import { Link } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 
@@ -24,7 +23,7 @@ export const Profile = () => {
             <Image
                 alt='Card profile'
                 className="onject-cover rounded-xl"
-                src={`${BASE_URL}${avatarUrl}`}
+                src={avatarUrl}
                 width={370}
             />
         </CardHeader>
