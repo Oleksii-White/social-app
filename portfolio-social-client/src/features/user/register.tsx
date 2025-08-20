@@ -43,6 +43,8 @@ export const Register: React.FC<Props> = ({
         } catch (error) {
             if (hasErrorField(error)) {
                 setError(error.data.error);
+            } else {
+                setError(String(error));
             }
         }
     }

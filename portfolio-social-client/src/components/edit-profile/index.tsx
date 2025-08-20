@@ -74,9 +74,13 @@ export const EditProfile: React.FC<Props> = ({
                 await updateUser({ userData: formData, id }).unwrap();
                 onClose()
             } catch (error) {
-                if (hasErrorField(error)) {
-                    setError(error.data.error)
-                }
+                setError(
+                    hasErrorField(error)
+                        ? error.data.error
+                        : error instanceof Error
+                            ? error.message
+                            : String(error)
+                )
             }
         }
     }
