@@ -1,9 +1,7 @@
+export const ErrorMessage = ({ error }: { error: unknown }) => {
+  const message = typeof error === "string" ? error : "";
 
-export const ErrorMessage = ({
-    error = ''
-}: {
-    error: string;
-}) => {
-    return error && <p className="text-red-500 mt-2 mb-5 text-small">{error}</p>
-
-}
+  return message ? (
+    <p className="text-red-500 mt-2 mb-5 text-small">{message}</p>
+  ) : null;
+};
