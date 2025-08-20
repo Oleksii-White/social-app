@@ -51,13 +51,7 @@ if (!fs.existsSync('uploads')) {
   fs.mkdirSync('uploads');
 }
 
-
-app.get('*', (req, res, next) => {
-  if (!req.path.startsWith('/api')) {
-    return res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  }
-  return next();
-});
+app.get('/', (_req, res) => res.json({ message: 'API is running' }));
 
 app.use((req, res, next) => {
   next(createError(404));
