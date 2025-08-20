@@ -44,6 +44,8 @@ export const Login: React.FC<Props> = ({ setSelected }) => {
         } catch (error) {
             if (hasErrorField(error)) {
                 setError(error.data.error);
+            } else {
+                setError(String(error));
             }
         }
     }

@@ -92,11 +92,13 @@ export const Card = ({
       await triggerGetPostById(id).unwrap()
       await refetchPosts()
     } catch (err) {
-      if (hasErrorField(err)) {
-        setError(err.data.error)
-      } else {
-        setError(err as string)
-      }
+      setError(
+        hasErrorField(err)
+          ? err.data.error
+          : err instanceof Error
+            ? err.message
+            : String(err)
+      )
     }
   }
 
@@ -121,11 +123,13 @@ export const Card = ({
 
     } catch (err) {
       console.log(err)
-      if (hasErrorField(err)) {
-        setError(err.data.error)
-      } else {
-        setError(err as string)
-      }
+      setError(
+        hasErrorField(err)
+          ? err.data.error
+          : err instanceof Error
+            ? err.message
+            : String(err)
+      )
     }
   }
 
