@@ -29,14 +29,20 @@ const UserController = {
 
             const png = Jdenticon.toPng(name, 200);
             const avatarBase64 = `data:image/png;base64,${png.toString('base64')}`;
-            const uploadedAvatar = await cloudinary.uploader.upload(avatarBase64);
+            let avatarUrl = avatarBase64;
+            try {
+                const uploadedAvatar = await cloudinary.uploader.upload(avatarBase64);
+                avatarUrl = uploadedAvatar.secure_url;
+            } catch (error) {
+                console.error("Cloudinary upload failed, using base64 avatar", error);
+            }
 
             const user = await prisma.user.create({
                 data: {
                     email,
                     password: hashedPassword,
                     name,
-                    avatarUrl: uploadedAvatar.secure_url,
+                    avatarUrl,
                 },
             });
 
@@ -121,9 +127,14 @@ const UserController = {
         try {
             if (req.file) {
                 const b64 = Buffer.from(req.file.buffer).toString('base64');
-                const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-                const uploadedFile = await cloudinary.uploader.upload(dataURI);
-                fileUrl = uploadedFile.secure_url;
+                const avatarBase64 = `data:${req.file.mimetype};base64,${b64}`;
+                fileUrl = avatarBase64;
+                try {
+                    const uploadedFile = await cloudinary.uploader.upload(avatarBase64);
+                    fileUrl = uploadedFile.secure_url;
+                } catch (error) {
+                    console.error("Cloudinary upload failed, using base64 avatar", error);
+                }
             }
 
             if (email) {
