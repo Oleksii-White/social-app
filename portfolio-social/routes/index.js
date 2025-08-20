@@ -8,16 +8,8 @@ const CommentController = require("../controllers/comment-controller");
 const { authenticateToken } = require("../middleware/auth");
 const multer = require('multer');
 
-const uploadDestination = 'uploads';
-
-const storage = multer.diskStorage({
-  destination: uploadDestination,
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  }
-});
-
-const upload = multer({ storage: storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 //  User
 router.post("/register", UserController.register);
 router.post("/login", UserController.login);
