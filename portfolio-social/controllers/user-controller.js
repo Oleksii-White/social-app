@@ -1,9 +1,10 @@
 const bcrypt = require("bcryptjs");
-const path = require("path");
-const fs = require('fs');
 const jwt = require("jsonwebtoken");
 const { prisma } = require("../prisma/prisma-client");
 const Jdenticon = require('jdenticon');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({ secure: true });
 
 const UserController = {
     register: async (req, res) => {
@@ -22,16 +23,15 @@ const UserController = {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const png = Jdenticon.toPng(name, 200);
-            const avatarName = `${name}_${Date.now()}.png`;
-            const avatarPath = path.join(__dirname, '/../uploads', avatarName);
-            fs.writeFileSync(avatarPath, png);
+            const avatarBase64 = `data:image/png;base64,${png.toString('base64')}`;
+            const uploadedAvatar = await cloudinary.uploader.upload(avatarBase64);
 
             const user = await prisma.user.create({
                 data: {
                     email,
                     password: hashedPassword,
                     name,
-                    avatarUrl: `/uploads/${avatarName}`,
+                    avatarUrl: uploadedAvatar.secure_url,
                 },
             });
 
@@ -107,17 +107,20 @@ const UserController = {
         const { id } = req.params;
         const { email, name, dateOfBirth, bio, location } = req.body;
 
-        let filePath;
-
-        if (req.file && req.file.path) {
-            filePath = req.file.path;
-        }
+        let fileUrl;
 
         if (id !== req.user.userId) {
             return res.status(403).json({ error: "Нет доступа" });
         }
 
         try {
+            if (req.file) {
+                const b64 = Buffer.from(req.file.buffer).toString('base64');
+                const dataURI = `data:${req.file.mimetype};base64,${b64}`;
+                const uploadedFile = await cloudinary.uploader.upload(dataURI);
+                fileUrl = uploadedFile.secure_url;
+            }
+
             if (email) {
                 const existingUser = await prisma.user.findFirst({
                     where: { email: email },
@@ -133,7 +136,7 @@ const UserController = {
                 data: {
                     email: email || undefined,
                     name: name || undefined,
-                    avatarUrl: filePath ? `/${filePath}` : undefined,
+                    avatarUrl: fileUrl || undefined,
                     dateOfBirth: dateOfBirth || undefined,
                     bio: bio || undefined,
                     location: location || undefined,
