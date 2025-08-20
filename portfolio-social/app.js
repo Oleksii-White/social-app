@@ -13,13 +13,13 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost',
-    'http://127.0.0.1'
+const allowedOrigins = (process.env.CLIENT_URL || '')
+  .split(',')
+  .map(origin => origin.trim())
+  .filter(Boolean);
 
-  ],
+app.use(cors({
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
